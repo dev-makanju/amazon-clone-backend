@@ -1,0 +1,26 @@
+started amazon clone web project on 28/12/2021
+This slide will contain the front-end and the backend on the application
+
+
+1). Scalfold the app with npm init install the require peerDependencies 
+
+#DEPENDENCIES USED
+
+..express for http request
+..morgan for displaying http request on terminal 
+..bodyParser for parsing the right format of data into the database
+... mongoose as the database driver
+
+
+..connect to Atlas for mongo cloud storage ..
+
+
+here is my mongo cloud password: CvyXZNe803d10j1o
+
+we are keep all our sensitive information outside of our app this is where we are going to use env variables
+
+
+for picture uploading to aws we need multer so can parse it in the simplest format
+
+multi-s3 to upload directly to aws bucket
+

@@ -6,12 +6,14 @@ router.post("/cartigories" , async ( req , res) => {
     try{  
         let cartigory = new Cartigory();
         cartigory.type = req.body.type
+
         await cartigory.save();
 
         res.json({
             status: true,
             message: "cartigory created successfully"
         });
+
     }catch(err){
         res.status(500).json({
             message:err.message

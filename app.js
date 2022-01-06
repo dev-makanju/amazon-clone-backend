@@ -3,29 +3,30 @@ const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose")
 const dotenv = require("dotenv");
+const cors = require("cors");
 
 
 dotenv.config();
 //initialise app
 const app = express();
 
+/////MIDDLEWARES
+//for cors policies
+app.use(cors());
+//morgan for displaying all the req in terminal
+app.use(morgan("dev"));
+//for parsing all the req and res data in the right format
 app.use(express.json());
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+    extended: false
+}));
 
 const productRoute = require("./routes/product")
 const cartigoryRoute = require("./routes/category")
 const ownerRoute = require("./routes/owner")
 const userRoute = require("./routes/user")
-
-
-
-/////MIDDLEWARES
-//morgan for displaying all the req in terminal
-app.use(morgan("dev"));
-//for parsing all the req and res data in the right format
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-    extended: false
-}));
 
 
 app.use("/api" , productRoute);

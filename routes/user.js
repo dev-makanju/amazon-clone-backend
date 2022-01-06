@@ -1,27 +1,41 @@
 const router = require("express").Router();
 const User = require("../models/user");
+const jwt = require("jsonwebtoken")
 
 /**
  * @route POST api/users
  * @desc Register a new user
  * @access Public
 */
-router.post("/users" , (req , res) => { 
-    let user = new User();
+router.post("/users/signup" , async (req , res) => { 
+    if(! req.body.email  || !req.body.password ) 
+    {
+         res.json({
+             status: false, 
+             message: "kindly input the required feild"
+         });
+    }else{
+        try{
+           let user = new User();
     
-    user.name = req.body.name,
-    user.email = req.body.email,
-    user.password = req.body.password;
+           user.name = req.body.name,
+           user.email = req.body.email,
+           user.password = req.body.password;
 
-    user.save(err => {
-        if(err){
-            res.json(err)
-        } else {
-            res.status(201).json({
-                message:"You created a new account!!"
-            });
+           await user.save()
+           let token = jwt.sign(user.toJSON() , process.env.SECRET , {
+                expiresIn: 604800 //1 week
+           });
+
+           res.json({
+                success: true,
+                token:token, 
+                message: "Successfully created a new user"
+           })
+        }catch(err){
+             console.log(err)
         }
-    })
-})
+    }
+});
 
 module.exports = router;

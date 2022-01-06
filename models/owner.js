@@ -7,4 +7,4 @@ const OwnerSchema = new Schema({
      photo: String,
 });
 
-module.exports = mongoose.model("Owner" , OwnerSchema)
+module.exports = mongoose.model("Owner" , OwnerSchema);

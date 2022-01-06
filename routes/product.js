@@ -11,6 +11,8 @@ const upload = require("../middlewares/upload-photo")
 router.post("/products" , upload.single("photo") ,  async ( req , res ) => {
     try{
         let product = new Product({    
+            ownerID :req.body.ownerID,
+            categoryID : req.body.categoryID,
             title:req.body.title,
             description:req.body.description,
             photo:req.file.location,
@@ -40,7 +42,8 @@ router.post("/products" , upload.single("photo") ,  async ( req , res ) => {
 
 router.get("/products" , async ( req , res ) => {
     try{
-        let products = await Product.find();
+        //added a populate feild to have our fetch all our data from it foreign keys
+        let products = await Product.find().populate("owner category").exec();
         res.json({
              status: true,
              products: products
@@ -61,7 +64,9 @@ router.get("/products" , async ( req , res ) => {
 
 router.get("/products/:id" , async ( req , res ) => {
     try{
-        let product = await Product.findOne({ _id:req.params.id });
+        let product = await Product.findOne({ _id:req.params.id })
+        .populate('owner category')
+        .exec();
         res.json({
              status: true,
              product: product
@@ -79,25 +84,28 @@ router.get("/products/:id" , async ( req , res ) => {
  * @desc register products
  * @access Public
  */
-router.put("/products/:id" ,  async ( req , res ) => {
+router.put("/products/:id" , upload.single("photo") ,  async ( req , res ) => {
     try{
-        let product = await Product.findOneAndUpdate({ _id:req.params.id } , {
+         let product = await Product.findOneAndUpdate({ _id:req.params.id} , {
             $set:{
                 title: req.body.title,
                 price: req.body.price,
                 category: req.body.categoryID,
                 description: req.body.description,
                 photo: req.file.location,
-                owner: req.body.owner
+                stockquantity: req.body.stockquantity,
+                owner: req.body.ownerID
             }
         },{
             upsert: true
         });
+
         res.json({
              status: true,
              message:"Successfully updated",
              updatedProduct: product
         });
+
     }catch(err){
         res.status(500).json({
             success: false,
@@ -126,7 +134,6 @@ router.delete("/products/:id" , async ( req , res) => {
             message: err.message
         });
     }
-    
 })
 
 

@@ -1,7 +1,9 @@
 const mongoose = require("mongoose");
+const mongooseAngolia = require("mongoose-algolia")
 const Schema = mongoose.Schema
 
-const ProductSchema = new Schema({
+const ProductSchema = new Schema(
+{
     category:{ 
          type: Schema.Types.ObjectId,
          ref:"Category" 
@@ -15,7 +17,48 @@ const ProductSchema = new Schema({
     photo: String,
     price: Number,
     stockquantity: Number,
-    rating:[Number]
+     reviews:[{
+        type: Schema.Types.ObjectId,
+        ref:'Review'
+     }],
+},
+{
+     toObject: {
+          virtuals: true 
+     },
+     toJSON: { 
+        virtuals: true, 
+     }
+}
+);
+
+ProductSchema.virtual("averageRating").get(function(){
+     if(this.reviews.length > 0){
+          let sum = this.reviews.reduce((total , review) => {
+               return total + review.rating
+               console.log(review , total)
+          } , 0 );
+          return sum / this.reviews.length      
+     }
+     return 0; 
+})
+
+ProductSchema.plugin(mongooseAngolia , {
+     appId: process.env.ALGOLIA_APP_ID,
+     apiKey: process.env.ALGOLIA_SECRET,
+     indexName: process.env.ALGOLIA_INDEX,
+
+     selector: " title _id photo description price rating averageRating owner",
+     populate:{
+          path:"owner reviews",
+          select:"name"
+     },
+     debug: true
 });
 
-module.exports = mongoose.model("Product" , ProductSchema )
+let Model = mongoose.model("Product" , ProductSchema );
+Model.SyncToAlgolia()
+Model.SetAlgoliaSettings({
+     searchableAttributes: ['title']
+})
+module.exports = Model

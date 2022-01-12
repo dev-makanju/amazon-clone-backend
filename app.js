@@ -27,12 +27,16 @@ const productRoute = require("./routes/product")
 const cartigoryRoute = require("./routes/category")
 const ownerRoute = require("./routes/owner")
 const userRoute = require("./routes/user")
+const reviewRoute = require("./routes/review")
+const addressRoute = require("./routes/address")
 
 
 app.use("/api" , productRoute);
 app.use("/api" , cartigoryRoute);
 app.use("/api" , ownerRoute);
 app.use("/api" , userRoute );
+app.use("/api" , reviewRoute);
+app.use("/api" , addressRoute);
 
 mongoose.connect( process.env.DATABASE , {
       useNewUrlParser: true,
@@ -41,7 +45,6 @@ mongoose.connect( process.env.DATABASE , {
 }).catch( err => {
     console.log(err)
 })
-
 
 
 app.get("/" , (req , res ) => {

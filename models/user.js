@@ -29,9 +29,8 @@ UserSchema.pre('save' , function(next){
 
             bcrypt.hash(user.password , salt , null , function(err , hash){
                 if(err){
-                    return next(err)
+                    return next(err);
                 }
-
                 user.password = hash;
                 next();
             });
@@ -40,5 +39,11 @@ UserSchema.pre('save' , function(next){
         return next(); 
     }
 });
+
+//we can't use arrow function because  
+UserSchema.methods.comparePassword  = function( password , next ){
+    let user  = this;
+    return  bcrypt.compareSync(password , user.password );
+}
 
 module.exports = mongoose.model("User" , UserSchema)

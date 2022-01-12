@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const Owner = require("../models/owner");
-const upload = require("../middlewares/upload-photo")
+const upload = require("../middlewares/upload-photo");
 
 
 //POST request
@@ -28,7 +28,6 @@ router.post("/owners" , upload.single("photo") , async ( req , res) => {
 router.get("/owners" , async ( req , res) => {
     try{
         let owners = await Owner.find();
-     
         res.json({
             status:true,
             owners:owners

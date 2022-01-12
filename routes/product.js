@@ -43,7 +43,10 @@ router.post("/products" , upload.single("photo") ,  async ( req , res ) => {
 router.get("/products" , async ( req , res ) => {
     try{
         //added a populate feild to have our fetch all our data from it foreign keys
-        let products = await Product.find().populate("owner category").exec();
+        let products = await Product.find()
+        .populate("owner category")
+        .populate("reviews" , "rating")
+        .exec();
         res.json({
              status: true,
              products: products
@@ -66,6 +69,7 @@ router.get("/products/:id" , async ( req , res ) => {
     try{
         let product = await Product.findOne({ _id:req.params.id })
         .populate('owner category')
+        .populate("reviews" , "rating")
         .exec();
         res.json({
              status: true,
@@ -78,6 +82,7 @@ router.get("/products/:id" , async ( req , res ) => {
         });
     }
 });
+
 /*upload.single("photo") **/
 /**
  * @route PUT api/product/id

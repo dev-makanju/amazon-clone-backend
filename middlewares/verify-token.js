@@ -4,11 +4,12 @@ const jwt = require("jsonwebtoken");
 module.exports = function(req , res , next){
     let token = req.headers['x-access-token'] || req.headers['authorisation'];
     let checkBearer = "Bearer "
-    if(token.startsWith(checkBearer)){
-        token = token.slice(checkBearer.length , token.lenght)
-    }
 
     if(token){
+        if(token.startsWith(checkBearer)){
+            token = token.slice(checkBearer.length , token.lenght)
+        } 
+
         jwt.verify(token , process.env.SECRET , (err , decoded) => {
             if(err) {
                 res.json({
